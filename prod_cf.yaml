@@ -1,0 +1,83 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  ArtifactBucketArn:
+    Type: String
+  PipelineAccount:
+    Type: Number
+  KMSKeyArn:
+    Type: String
+Resources:
+  CrossAccountPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - cloudformation:*
+              - iam:PassRole
+              - lambda:InvokeFunction
+            Resource: '*'
+          - Effect: Allow
+            Action:
+              - s3:Get*
+              - s3:Put*
+              - s3:ListBucket
+            Resource:
+              - !Sub "${ArtifactBucketArn}/*"
+              - "arn:aws:s3:::*/*"
+  CrossAccountKMSPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - kms:DescribeKey
+              - kms:GenerateDataKey*
+              - kms:Encrypt
+              - kms:ReEncrypt*
+              - kms:Decrypt
+            Resource:
+              - !Ref KMSKeyArn
+  InvalidateCachePolicy:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      PolicyDocument: 
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - cloudfront:CreateInvalidation
+            Resource:
+              - arn:aws:cloudfront::*:distribution/*
+  CrossAccountRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument: 
+        Version: 2012-10-17
+        Statement:
+        - Effect: Allow
+          Principal:
+              AWS: !Ref PipelineAccount
+          Action: 'sts:AssumeRole'
+      ManagedPolicyArns:
+        - !Ref CrossAccountKMSPolicy
+        - !Ref CrossAccountPolicy
+        - !Ref InvalidateCachePolicy
+  CloudFormationProdDeployer:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: "/service-role/"
+      RoleName: !Sub 'CloudFormationProdDeployer-${AWS::Region}'
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cloudformation.amazonaws.com
+            Action: "sts:AssumeRole"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AdministratorAccess"

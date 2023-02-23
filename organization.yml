@@ -1,0 +1,43 @@
+AWSTemplateFormatVersion: '2010-09-09-OC'
+Description: default template generated for organization with master account 147174786952
+
+Organization:
+  ManagementAccount:
+    Type: OC::ORG::MasterAccount
+    Properties:
+      AccountName: Krzysztof Zwolenik
+      AccountId: '147174786952'
+      RootEmail: kzwolenik95@gmail.com
+
+  OrganizationRoot:
+    Type: OC::ORG::OrganizationRoot
+    Properties:
+      DefaultOrganizationAccessRoleName: OrganizationAccountAccessRole
+
+  ProductionOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: production
+      Accounts: !Ref ProductionAccount
+
+  DevelopmentOU:
+    Type: OC::ORG::OrganizationalUnit
+    Properties:
+      OrganizationalUnitName: development
+      Accounts: !Ref DevelopmentAccount
+
+  DevelopmentAccount:
+    Type: OC::ORG::Account
+    Properties:
+      AccountName: Development Account
+      AccountId: '982211721436'
+      RootEmail: kzwolenik95+development-account@gmail.com
+
+  ProductionAccount:
+    Type: OC::ORG::Account
+    Properties:
+      AccountName: Production Account
+      AccountId: '173633330431'
+      RootEmail: kzwolenik95+production-account@gmail.com
+
+
