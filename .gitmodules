@@ -1,0 +1,9 @@
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/kzwolenik95/resume-frontend
+[submodule "backend"]
+	path = frontend
+	url = https://github.com/kzwolenik95/resume-backend
+[submodule "e2e_tests"]
+	path = frontend
+	url = https://github.com/kzwolenik95/resume-e2e-tests
