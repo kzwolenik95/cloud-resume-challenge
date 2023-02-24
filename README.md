@@ -27,7 +27,7 @@ Whole project is deployed using one **CodePipeline**, this pipeline first get th
 from three **CodeCommit** repositories, builds and 
 deploys everything to TEST, run Cypress smoke tests, prepares ChangeSets and after a 
 manual approval it continues the deployment to the PROD with a very similar steps 
-as in TEST. Frontend and backend is stored as *Infrastructure as code* in **CloudFromation** 
+as in TEST. Frontend and backend is stored as *Infrastructure as code* in **CloudFormation** 
 templates
 
 ![Pipeline](images/pipeline_diagram.png)
